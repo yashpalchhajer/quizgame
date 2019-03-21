@@ -1,0 +1,27 @@
+{
+  "name": "quiz_game",
+  "version": "1.0.0",
+  "description": "a quize game api with node and socket",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3",
+    "mysql": "^2.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "socket.io",
+    "quiz",
+    "multiplayer",
+    "teamplayer"
+  ],
+  "author": "Yashpal <yashpalchhajer@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
+}

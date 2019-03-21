@@ -1,0 +1,64 @@
+<!-- to run on seperate server -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form id="register">
+        <input type="text" name="user" id="userId" placeholder="User id">
+        <input type="button" onclick="register()" value="Search">
+    </form>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            // var socket = io.connect('http://localhost:3000', { reconnect: true });
+            var socket = io.connect('http://localhost:3000');
+
+            // let's assume that the client page, once rendered, knows what room it wants to join
+            var room = "abc123";
+
+            socket.on('connect', function () {
+                console.log('connnection send');
+                // Connected, let's sign-up for to receive messages for this room
+                socket.emit('room', room);
+            });
+
+            socket.on('message', function (data) {
+                console.log('Incoming message:', data);
+            });
+        });
+
+        function register() {
+            console.log('register called' + $('#userId').val());
+            $.post('http://localhost:3000/register',
+                {
+                    "user_id": $('#userId').val()
+                }
+            ).done((res, status) => {
+                console.log(res);
+            });
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>
