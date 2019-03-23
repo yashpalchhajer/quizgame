@@ -1,4 +1,6 @@
 
+/** will used later on */
+
 CREATE DATABASE `quizegame`;
 
 CREATE TABLE `active_users` (

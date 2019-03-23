@@ -1,61 +1,98 @@
-<!-- to run on seperate server -->
+<!-- 
+
+    THIS FILE TO BE HOST ON ANOTHER SERVER 
+    IT AN EXAMPLE OF CONSUMING THIS QUIZ GAME
+
+ -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
-
-    <form id="register">
-        <input type="text" name="user" id="userId" placeholder="User id">
-        <input type="button" onclick="register()" value="Search">
-    </form>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Socket Pair</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <style type="text/css">
+        li {
+            cursor: pointer;
+        }
 
+        .chat {
+            position: relative;
+            width: 20%;
+            margin: 10px
+        }
 
+        .chatcont {
+            margin: 10px;
+        }
+
+        #chats {
+            width: 100%;
+            margin-top: 20px;
+            display: -webkit-inline-box;
+        }
+
+        .btnclose {
+            margin-left: 15px
+        }
+
+        .chats input {
+            width: 70%
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" name="user" id="user">
+    <button type="button" id="log" onclick="login()">Join</button>
+    <div id="userName"></div>
+
+    <div id="question"></div>
+    <div id="opt_a"></div>
+    <div id="opt_b"></div>
+    <div id="opt_c"></div>
+    <div id="opt_d"></div>
     <script>
 
-        $(document).ready(function () {
-            // var socket = io.connect('http://localhost:3000', { reconnect: true });
-            var socket = io.connect('http://localhost:3000');
+        var userName = $('#userName');
+        /** Socket connection to be established with host server of socket*/
+        var serverUrl = 'http://localhost:3000';
+        var socket = io(serverUrl);
+        evts();
 
-            // let's assume that the client page, once rendered, knows what room it wants to join
-            var room = "abc123";
-
-            socket.on('connect', function () {
-                console.log('connnection send');
-                // Connected, let's sign-up for to receive messages for this room
-                socket.emit('room', room);
+        function evts() {
+            /** will be fired when a room will be created for it */
+            socket.on('assignRoom', function (data) {
+                /** fire to join room */
+                socket.emit('joinRoom', data);
             });
 
-            socket.on('message', function (data) {
-                console.log('Incoming message:', data);
-            });
-        });
-
-        function register() {
-            console.log('register called' + $('#userId').val());
-            $.post('http://localhost:3000/register',
-                {
-                    "user_id": $('#userId').val()
-                }
-            ).done((res, status) => {
-                console.log(res);
+            /** Will be fired when a new question will be provided to it's room */
+            socket.on('fireQuest', function (data) {
+                $('#question').text('Question: ' + data.question);
+                $('#opt_a').text('A) ' + data.options[0].name);
+                $('#opt_b').text('B) ' + data.options[1].name);
+                $('#opt_c').text('C) ' + data.options[2].name);
+                $('#opt_d').text('D) ' + data.options[3].name);
             });
         }
 
-
+        /** will be called on login new user */
+        function login() {
+            user = document.getElementById('user').value;
+            /** evenet to be fire on user login or play button hit with user_name or id in String format */
+            socket.emit('login', user);
+            $('#user').hide();
+            $('#log').hide();
+            $('#userName').text(user);
+        }
 
     </script>
 
